@@ -1,0 +1,85 @@
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH}
+    encoding:
+      force: true
+  shutdown: graceful
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME}
+  config:
+    import: ${SECRETS_MANAGER_CONFIG_IMPORT}
+  cloud:
+    aws:
+      endpoint: ${AWS_ENDPOINT}
+      region:
+        static: sa-east-1
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      dynamodb:
+        table-prefix: ${DYNAMO_TABLE_PREFIX}
+      s3:
+        bucket: ${S3_BUCKET}
+      sns:
+        topic:
+          arn: ${SNS_TOPIC_ARN}
+      sqs:
+        queue:
+          email-created:
+            url: ${SQS_QUEUE_EMAIL_CREATED_URL}
+      secretsmanager:
+        region: ${SECRETS_MANAGER_REGION}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: ${MAIL_DEFAULT_ENCODING}
+    from: ${MAIL_FROM}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE}
+
+  web:
+    resources:
+      add-mappings: false
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: ${JACKSON_TIME_ZONE}
+    serialization:
+      write-dates-as-timestamps: false
+  servlet:
+    multipart:
+      max-file-size:  2MB
+      max-request-size:  2MB
+springdoc:
+  swagger-ui:
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  show-actuator: false
+management:
+  tracing:
+    enabled: false
+    sampling:
+      probability: 1.0
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    git:
+      mode: full
+openapi-servers-urls: http://localhost:${server.port}${server.servlet.context-path}, http://127.0.0.1:${server.port}${server.servlet.context-path}
+
